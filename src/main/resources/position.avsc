@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "position",
+  "namespace": "ca.dataedu.avro",
+  "fields": [
+    {
+      "name": "lat",
+      "type": "double"
+    },
+    {
+      "name": "lng",
+      "type": "double"
+    }
+  ]
+}
