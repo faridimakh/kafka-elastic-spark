@@ -12,14 +12,10 @@ import scala.collection.JavaConverters.seqAsJavaListConverter
 
 object ConsumeAvrovilib extends App {
 
-
-  // 1. Create a consumer properties
-  // 2. Create a consumer
-  // 3. Start consuming
   val consumerProperties = new Properties()
   consumerProperties.setProperty(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
   consumerProperties.setProperty(GROUP_ID_CONFIG, "vilib-processor")
-  consumerProperties.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, classOf[StringDeserializer].getName)
+  consumerProperties.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, classOf[KafkaAvroDeserializer].getName)
   consumerProperties.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, classOf[KafkaAvroDeserializer].getName)
   consumerProperties.setProperty("schema.registry.url", "http://localhost:8081")
   consumerProperties.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest")

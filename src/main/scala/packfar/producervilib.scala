@@ -15,7 +15,7 @@ object producervilib extends App {
   //  -----------------------------------------------------------------------------------------------------
   val srClient = new CachedSchemaRegistryClient("http://localhost:8081", 1)
   val vilibSchema = srClient.getByID(srClient.getSchemaMetadata("vilib", 1).getId)
-  val vilibSchema_pos = srClient.getByID(srClient.getSchemaMetadata("vilibpos", 1).getId)
+  val vilibSchema_pos = srClient.getByID(srClient.getSchemaMetadata("vilib_position", 1).getId)
 
   val spark = new SparkSession.Builder()
     .appName("kafka-client")
@@ -34,9 +34,9 @@ object producervilib extends App {
 
   def getpos(s: String, i: Int): Double = {
     s.drop(1).dropRight(1).split(",")(i).toDouble}
-    //  -----------------------------------------------------------------------------------------------------
+  //  -----------------------------------------------------------------------------------------------------
   while (true){
-    val vilibDF = GetUrlContentJson(url)
+    val vilibDF = GetUrlContentJson(url).where("not(address!='' and name=='STORTORGET')")
 
     //  -----------------------------------------------------------------------------------------------------
 
@@ -54,11 +54,11 @@ object producervilib extends App {
         .set("last_update", row(7).toString.toLong)
         .set("name", row(8).toString)
         .set("number", row(9).toString.toLong)
-        .set("position",
-          new GenericRecordBuilder(vilibSchema_pos)
-            .set("lat", getpos(row(10).toString, 0))
-            .set("lng", getpos(row(10).toString, 1))
-            .build())
+                .set("location",
+                  new GenericRecordBuilder(vilibSchema_pos)
+                    .set("lat", getpos(row(10).toString, 0))
+                    .set("lon", getpos(row(10).toString, 1))
+                    .build())
         .set("status", row(11).toString)
         .build()
     }).toList
@@ -66,7 +66,7 @@ object producervilib extends App {
 
     val producerProperties = new Properties()
     producerProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
-    producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[StringSerializer].getName)
+    producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer].getName)
     producerProperties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer].getName)
     producerProperties.setProperty("schema.registry.url", "http://localhost:8081")
 
@@ -78,4 +78,4 @@ object producervilib extends App {
 
   }
 
-  }
+}

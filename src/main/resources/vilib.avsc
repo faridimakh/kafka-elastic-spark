@@ -1,9 +1,9 @@
 {
   "type": "record",
-  "name": "Apple",
+  "name": "vilib",
   "namespace": "ca.dataedu.avro",
   "fields": [
-    { "name": "address","type": "string"},
+    { "name": "address","type": [ "null", "string"]},
     { "name": "available_bike_stands","type": "long"},
     { "name": "available_bikes","type": "long"},
     { "name": "banking","type": "boolean"},
@@ -13,7 +13,7 @@
     { "name": "last_update","type": "long"},
     { "name": "name" ,"type": "string"},
     { "name": "number","type": "long"},
-    {"name": "position", "type": {"type" : "record", "name" : "position", "fields" : [{"name": "lat", "type": "double"},{"name": "lng", "type": "double"}]}},
+    {"name": "location", "type": {"type" : "record", "name" : "location", "fields" : [{"name": "lat", "type": "double"},{"name": "lon", "type": "double"}]}},
     { "name": "status","type": "string"}
   ]
 }
