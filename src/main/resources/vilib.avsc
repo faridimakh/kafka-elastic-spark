@@ -1,14 +1,3 @@
-//{
-//  "type": "record",
-//  "name": "vilib",
-//  "namespace": "ca.far.avro",
-//  "fields": [
-//    { "name": "available_bikes","type": "long"},
-//    { "name": "name" ,"type": "string"},
-//    {"name": "location", "type": {"type" : "record", "name" : "location", "fields" : [{"name": "lat", "type": "double"},{"name": "lon", "type": "double"}]}}
-//  ]
-//}
-
 {
   "type": "record",
   "name": "vilib",
