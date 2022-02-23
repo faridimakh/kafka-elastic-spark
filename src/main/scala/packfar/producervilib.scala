@@ -14,7 +14,7 @@ object producervilib extends App {
   val url = "https://api.jcdecaux.com/vls/v1/stations?apiKey=2a5d13ea313bf8dc325f8783f888de4eb96a8c14"
   //  -----------------------------------------------------------------------------------------------------
   val srClient = new CachedSchemaRegistryClient("http://localhost:8081", 1)
-  val vilibSchema = srClient.getByID(srClient.getSchemaMetadata("vilib", 1).getId)
+  val vilibSchema = srClient.getByID(srClient.getSchemaMetadata("target_topic", 1).getId)
   val vilibSchema_pos = srClient.getByID(srClient.getSchemaMetadata("vilib_position", 1).getId)
 
   val spark = new SparkSession.Builder()
@@ -33,13 +33,13 @@ object producervilib extends App {
   }
 
   def getpos(s: String, i: Int): Double = {
-    s.drop(1).dropRight(1).split(",")(i).toDouble}
+    s.drop(1).dropRight(1).split(",")(i).toDouble
+  }
   //  -----------------------------------------------------------------------------------------------------
-  while (true){
+  while (true) {
     val vilibDF = GetUrlContentJson(url).where("not(address!='' and name=='STORTORGET')")
 
     //  -----------------------------------------------------------------------------------------------------
-
     val vilibrdd: Array[Row] = vilibDF.rdd.collect()
 
     val avrovilib: List[GenericRecord] = vilibrdd.map({ row =>
@@ -54,15 +54,14 @@ object producervilib extends App {
         .set("last_update", row(7).toString.toLong)
         .set("name", row(8).toString)
         .set("number", row(9).toString.toLong)
-                .set("location",
-                  new GenericRecordBuilder(vilibSchema_pos)
-                    .set("lat", getpos(row(10).toString, 0))
-                    .set("lon", getpos(row(10).toString, 1))
-                    .build())
+        .set("location",
+          new GenericRecordBuilder(vilibSchema_pos)
+            .set("lat", getpos(row(10).toString, 0))
+            .set("lon", getpos(row(10).toString, 1))
+            .build())
         .set("status", row(11).toString)
         .build()
     }).toList
-
 
     val producerProperties = new Properties()
     producerProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
@@ -71,11 +70,11 @@ object producervilib extends App {
     producerProperties.setProperty("schema.registry.url", "http://localhost:8081")
 
     val producer = new KafkaProducer[String, GenericRecord](producerProperties)
-    avrovilib.map(avroMessage => new ProducerRecord[String, GenericRecord]("vilib", avroMessage.get("name").toString, avroMessage))
+    avrovilib.map(avroMessage => new ProducerRecord[String, GenericRecord]("target_topic", avroMessage.get("name").toString, avroMessage))
       .map(producer.send)
     producer.flush()
-
-
   }
+
+  //  }
 
 }

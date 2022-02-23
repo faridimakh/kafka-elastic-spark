@@ -21,7 +21,7 @@ object ConsumeAvrovilib extends App {
   consumerProperties.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   val consumer = new KafkaConsumer[String, GenericRecord](consumerProperties)
-  consumer subscribe List("vilib").asJava
+  consumer subscribe List("target_topic").asJava
 
   println("| Key | Message | Partition | Offset |")
   while (true) {
@@ -30,7 +30,7 @@ object ConsumeAvrovilib extends App {
       val recordIterator = polledRecords.iterator()
       while (recordIterator.hasNext) {
         val record = recordIterator.next()
-        println(s"| ${record.key()} | ${record.value().toString} | ${record.partition()} | ${record.offset()} |")
+        println(record.value().toString)
       }
     }
   }

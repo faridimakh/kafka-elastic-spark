@@ -1,7 +1,18 @@
+//{
+//  "type": "record",
+//  "name": "vilib",
+//  "namespace": "ca.far.avro",
+//  "fields": [
+//    { "name": "available_bikes","type": "long"},
+//    { "name": "name" ,"type": "string"},
+//    {"name": "location", "type": {"type" : "record", "name" : "location", "fields" : [{"name": "lat", "type": "double"},{"name": "lon", "type": "double"}]}}
+//  ]
+//}
+
 {
   "type": "record",
   "name": "vilib",
-  "namespace": "ca.dataedu.avro",
+  "namespace": "ca.far.avro",
   "fields": [
     { "name": "address","type": [ "null", "string"]},
     { "name": "available_bike_stands","type": "long"},
@@ -17,4 +28,3 @@
     { "name": "status","type": "string"}
   ]
 }
-
