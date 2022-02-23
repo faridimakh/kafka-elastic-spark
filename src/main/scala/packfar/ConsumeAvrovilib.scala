@@ -14,14 +14,14 @@ object ConsumeAvrovilib extends App {
 
   val consumerProperties = new Properties()
   consumerProperties.setProperty(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
-  consumerProperties.setProperty(GROUP_ID_CONFIG, "vilib-processor")
+  consumerProperties.setProperty(GROUP_ID_CONFIG, vilib_group_consumers)
   consumerProperties.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, classOf[KafkaAvroDeserializer].getName)
   consumerProperties.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, classOf[KafkaAvroDeserializer].getName)
   consumerProperties.setProperty("schema.registry.url", "http://localhost:8081")
   consumerProperties.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   val consumer = new KafkaConsumer[String, GenericRecord](consumerProperties)
-  consumer subscribe List("target_topic").asJava
+  consumer subscribe List(target_topic).asJava
 
   println("| Key | Message | Partition | Offset |")
   while (true) {

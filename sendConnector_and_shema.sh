@@ -1,4 +1,5 @@
-------------------------------------------------------------------------------------
+#bin/bash
+# shellcheck disable=SC2046
 curl --silent --show-error -XPUT -H 'Content-Type: application/json' \
 http://localhost:9200/_index_template/rmoff_template01/ \
 -d'{
@@ -20,25 +21,7 @@ http://localhost:9200/_index_template/rmoff_template01/ \
         }
       }}}}'
 
----------------------------------------------------------------------
-docker exec -it ksqldb ksql http://ksqldb:8088
-SET 'auto.offset.reset' = 'earliest';
----------------------------------------------------------------------
-CREATE SINK CONNECTOR SINK_ELASTIC WITH (
-'connector.class'                     = 'io.confluent.connect.elasticsearch.ElasticsearchSinkConnector',
-'connection.url'                      = 'http://elasticsearch:9200',
-'value.converter.schema.registry.url' = 'http://schema-registry:8081',
-'topics'                              = 'target_topic',
-'value.converter'                     = 'io.confluent.connect.avro.AvroConverter',
-'key.converter'                       = 'io.confluent.connect.avro.AvroConverter',
-'key.converter.schema.registry.url'   = 'http://schema-registry:8081',
-'type.name'                           = '_doc',
-'key.ignore'                          = 'false',
-'schema.ignore'                       = 'true'
-);
 
----------------------------------------------------------------------
---or:
 curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json" -d '{
 "name": "SINK_ELASTIC",
 "config": {
