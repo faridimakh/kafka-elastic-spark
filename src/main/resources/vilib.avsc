@@ -15,5 +15,6 @@
     { "name": "number","type": "long"},
     {"name": "location", "type": {"type" : "record", "name" : "location", "fields" : [{"name": "lat", "type": "double"},{"name": "lon", "type": "double"}]}},
     { "name": "status","type": "string"}
+//    { "name": "isVal","type": "long"}
   ]
 }

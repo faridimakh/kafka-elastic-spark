@@ -7,11 +7,11 @@ import scala.io.Source
 
 object RegisterSchemavilib extends App {
 
-  val vilibSchema: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/vilib.avsc").mkString)
-  val posSchema: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/position.avsc").mkString)
-  val srClient = new CachedSchemaRegistryClient("http://localhost:8081", 1)
-  srClient.register(target_topic, vilibSchema)
-  srClient.register(vilib_position, posSchema)
+//  val vilibSchema: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/vilib.avsc").mkString)
+//  val posSchema: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/position.avsc").mkString)
+//  val srClient = new CachedSchemaRegistryClient("http://localhost:8081", 1)
+//  srClient.register(target_topic, vilibSchema)
+//  srClient.register(vilib_position, posSchema)
 
 
 }
