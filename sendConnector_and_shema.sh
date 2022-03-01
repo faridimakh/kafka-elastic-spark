@@ -17,10 +17,10 @@ http://localhost:9200/_index_template/rmoff_template01/ \
         "location": {"type": "geo_point"},
         "name": {"type": "text","fields": {"keyword": {"type": "keyword","ignore_above": 256}}},
         "number": {"type": "long"},
-        "status": {"type": "text","fields": {"keyword": {"type": "keyword","ignore_above": 256}}
-        }
+        "status": {"type": "text","fields": {"keyword": {"type": "keyword","ignore_above": 256}}}
       }}}}'
 
+#        "isVal": {"type": "long"}
 
 curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json" -d '{
 "name": "SINK_ELASTIC",
@@ -37,3 +37,16 @@ curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json
 "schema.ignore": "true"
 }
 }'
+
+#---------------------------------------------------------------------
+#docker exec -it ksqldb ksql http://ksqldb:8088
+#SET 'auto.offset.reset' = 'earliest';
+
+#---------------------------------------------------------------------
+#bin/bash
+# shellcheck disable=SC2046
+#docker-compose down
+#docker rm -f $(docker ps -a -q)
+#docker rmi $(docker images -a -q)
+#docker volume rm $(docker volume ls -q)
+
