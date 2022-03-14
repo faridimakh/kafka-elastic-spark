@@ -13,9 +13,9 @@ libraryDependencies += "io.confluent"     % "kafka-schema-registry-client" % Con
 libraryDependencies += "io.confluent"     % "kafka-avro-serializer"        % ConfluentVersion
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.3.1"
 
-//libraryDependencies ++= Seq(
-//  "org.scala-lang" % "scala-library" % scalaVersion.value
-//)
+libraryDependencies ++= Seq(
+  "org.scala-lang" % "scala-library" % scalaVersion.value
+)
 
 dependencyOverrides ++= {
   Seq(

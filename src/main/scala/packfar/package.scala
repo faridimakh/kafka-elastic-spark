@@ -12,14 +12,22 @@ import scala.io.Source
 
 package object packfar {
   //  -----------------------------------------------------------------------------------------------------
-  val spark: SparkSession = new SparkSession.Builder()
+  lazy val vilibSchema: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/vilib.avsc").mkString)
+  lazy val vilibSchema_pos: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/position.avsc").mkString)
+  val target_topic = "target_topic"
+  val vilib_group_consumers = "vilib-group_consumers"
+  val vilib_position = "vilib_position"
+  lazy val posSchema: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/position.avsc").mkString)
+  lazy val srClient = new CachedSchemaRegistryClient("http://localhost:8081", 1)
+  lazy val key_vilib = "2a5d13ea313bf8dc325f8783f888de4eb96a8c14"
+  lazy val spark: SparkSession = new SparkSession.Builder()
     .appName("kafka-client")
     .master("local[*]")
     .getOrCreate()
   spark.sparkContext.setLogLevel("WARN")
+  lazy val url: String = "https://api.jcdecaux.com/vls/v1/stations?apiKey=" + key_vilib
 
   //  -----------------------------------------------------------------------------------------------------
-  val url: String = "https://api.jcdecaux.com/vls/v1/stations?apiKey=2a5d13ea313bf8dc325f8783f888de4eb96a8c14"
 
   //  -----------------------------------------------------------------------------------------------------
   def GetUrlContentJson(url: String): DataFrame = {
@@ -29,9 +37,11 @@ package object packfar {
     val jsonDf = spark.read.json(jsonRdd)
     jsonDf
   }
+
   def getpos(s: String, i: Int): Double = {
     s.drop(1).dropRight(1).split(",")(i).toDouble
   }
+
   def send_df_to_kafka(df: DataFrame): Unit = {
     val avrovilib: List[GenericRecord] = df.rdd.collect().map({ row =>
       new GenericRecordBuilder(vilibSchema)
@@ -42,7 +52,7 @@ package object packfar {
         .set("bike_stands", row(4).toString.toLong)
         .set("bonus", row(5).toString.toBoolean)
         .set("contract_name", row(6).toString)
-        .set("last_update", row(7).toString.toLong)
+        //          .set("last_update", row(7).toString.toLong)
         .set("name", row(8).toString)
         .set("number", row(9).toString.toLong)
         .set("location",
@@ -51,12 +61,9 @@ package object packfar {
             .set("lon", getpos(row(10).toString, 1))
             .build())
         .set("status", row(11).toString)
-//        .set("isVal", row(12).toString.toLong)
         .build()
     }).toList
-  //  -----------------------------------------------------------------------------------------------------
-
-
+    //  -----------------------------------------------------------------------------------------------------
     val producerProperties = new Properties()
     producerProperties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
     producerProperties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer].getName)
@@ -65,23 +72,11 @@ package object packfar {
 
     val producer = new KafkaProducer[String, GenericRecord](producerProperties)
     avrovilib.map(avroMessage => new ProducerRecord[String, GenericRecord](target_topic, avroMessage.get("name").toString, avroMessage))
-      .map(producer.send)
+      .map(x => producer.send(x).get())
     producer.flush()
   }
 
 
-  //  -----------------------------------------------------------------------------------------------------
-  lazy val vilibSchema: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/vilib.avsc").mkString)
-  lazy val vilibSchema_pos: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/position.avsc").mkString)
-
-  //  -----------------------------------------------------------------------------------------------------
-  val target_topic = "target_topic"
-  //  -----------------------------------------------------------------------------------------------------
-  val vilib_group_consumers = "vilib-group_consumers"
-  val vilib_position = "vilib_position"
-
-  val posSchema: Schema = new Schema.Parser().parse(Source.fromFile("src/main/resources/position.avsc").mkString)
-  val srClient = new CachedSchemaRegistryClient("http://localhost:8081", 1)
   def simulate_data(): DataFrame = {
     var df1 = GetUrlContentJson(url).where("not(address!='' and name=='STORTORGET')")
     df1 = df1.withColumn("available_bike_stands", round((rand() * 5 + 5) / 2, 0).cast(IntegerType))
@@ -89,4 +84,6 @@ package object packfar {
     df1 = df1.withColumn("bike_stands", df1("available_bikes") + df1("available_bike_stands"))
     df1.toDF()
   }
+
+  //  -----------------------------------------------------------------------------------------------------
 }

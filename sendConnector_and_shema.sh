@@ -13,14 +13,12 @@ http://localhost:9200/_index_template/rmoff_template01/ \
         "bike_stands": {"type": "long"},
         "bonus": {"type": "boolean"},
         "contract_name": {"type": "text","fields": {"keyword": {"type": "keyword","ignore_above": 256}}},
-        "last_update": {"type": "long"},
         "location": {"type": "geo_point"},
         "name": {"type": "text","fields": {"keyword": {"type": "keyword","ignore_above": 256}}},
         "number": {"type": "long"},
         "status": {"type": "text","fields": {"keyword": {"type": "keyword","ignore_above": 256}}}
       }}}}'
 
-#        "isVal": {"type": "long"}
 
 curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json" -d '{
 "name": "SINK_ELASTIC",

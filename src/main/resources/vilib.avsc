@@ -10,11 +10,10 @@
     { "name": "bike_stands","type": "long"},
     { "name": "bonus","type": "boolean"},
     { "name": "contract_name","type": "string"},
-    { "name": "last_update","type": "long"},
+//    { "name": "last_update","type": "long"},
     { "name": "name" ,"type": "string"},
     { "name": "number","type": "long"},
     {"name": "location", "type": {"type" : "record", "name" : "location", "fields" : [{"name": "lat", "type": "double"},{"name": "lon", "type": "double"}]}},
     { "name": "status","type": "string"}
-//    { "name": "isVal","type": "long"}
   ]
 }
