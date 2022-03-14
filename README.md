@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Central dashboard application
 
 ## discription :
@@ -12,3 +13,6 @@ the project consists in visualizing the number of bikes available from the vilib
 <br> docker-compose up -d
 2. if you want to see fastly the changes in kibana lanch the script main_producer_simulated_data,
 3. if you want to see the real changes data in kibana lanch the script main_producer_real
+=======
+# kafka-elastic-spark
+>>>>>>> origin/master
