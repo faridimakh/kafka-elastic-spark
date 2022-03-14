@@ -9,7 +9,7 @@ the project consists in visualizing the number of bikes available from the vilib
 1. Docker (and docker-compose)
 2. scala
 ## how to use :
-1. install services locally (zookeper,kafka brocker, elasticsearch,kibana...):
+1. install services locally (zookeeper, kafka brocker, kafka-connect, schema-registry, elasticsearch, kibana):
 <br> docker-compose up -d
 2. if you want to see fastly the changes in kibana lanch the script main_producer_simulated_data,
 3. if you want to see the real changes data in kibana lanch the script main_producer_real
